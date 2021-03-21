@@ -98,19 +98,39 @@ def strassen_matrix_mult(A: Matrix, B: Matrix) -> Matrix:
     B11, B12, B21, B22 = get_matrix_quadrands(B)
 
     # recursion calls
-    P1 = strassen_matrix_mult(A11, B12 - B22)
-    P2 = strassen_matrix_mult(A11 + A12, B22)
-    P3 = strassen_matrix_mult(A21 + A22, B11)
-    P4 = strassen_matrix_mult(A22, B21 - B11)
-    P5 = strassen_matrix_mult(A11 + A22, B11 + B22)
-    P6 = strassen_matrix_mult(A12 - A22, B21 + B22)
-    P7 = strassen_matrix_mult(A11 - A21, B11 + B12)
+    # this was P1
+    P = strassen_matrix_mult(A11, B12 - B22)
+    C12 = P
+    C22 = P
 
-    # second batch of sums Theta(n^2)
-    C11 = P5 + P4 - P2 + P6
-    C12 = P1 + P2
-    C21 = P3 + P4
-    C22 = P5 + P1 - P3 - P7
+    # this was P3
+    P = strassen_matrix_mult(A21 + A22, B11)
+    C21 = P
+    C22 = C22 - P
+
+    # this was P4
+    P = strassen_matrix_mult(A22, B21 - B11)
+    C11 = P
+    C21 = C21 + P
+
+    # this was P2 - it has been moved down to allow using the -= operator
+    # on the now initialized C11 matrix
+    P = strassen_matrix_mult(A11 + A12, B22)
+    C11 = C11 - P
+    C12 = C12 + P
+
+    # this was P5
+    P = strassen_matrix_mult(A11 + A22, B11 + B22)
+    C11 = C11 + P
+    C22 = C22 + P
+
+    # this was P6
+    P = strassen_matrix_mult(A12 - A22, B21 + B22)
+    C11 = C11 + P
+
+    # this was P7
+    P = strassen_matrix_mult(A11 - A21, B11 + B12)
+    C22 = C22 - P
 
     # build the resulting matrix
     result = Matrix([[0 for x in range(B.num_of_cols)] for y in range(A.num_of_rows)],
