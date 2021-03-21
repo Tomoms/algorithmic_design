@@ -66,7 +66,7 @@ def zero_pad(A: Matrix, new_dim: int) -> Matrix:
             row.append(0)
     for j in range(new_rows):
         values.append([0 for i in range(new_dim)])
-    return Matrix(values)
+    return Matrix(values, clone_matrix = False)
 
 
 def strassen_matrix_general(A: Matrix, B: Matrix) -> Matrix:
@@ -78,7 +78,7 @@ def strassen_matrix_general(A: Matrix, B: Matrix) -> Matrix:
             del row[q - i - 1]
     for j in range(q - m):
         del values[q - j - 1]
-    return Matrix(values)
+    return Matrix(values, clone_matrix = False)
 
 
 def strassen_matrix_mult(A: Matrix, B: Matrix) -> Matrix:
