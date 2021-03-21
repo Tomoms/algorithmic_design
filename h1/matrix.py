@@ -97,26 +97,14 @@ def strassen_matrix_mult(A: Matrix, B: Matrix) -> Matrix:
     A11, A12, A21, A22 = get_matrix_quadrands(A)
     B11, B12, B21, B22 = get_matrix_quadrands(B)
 
-    # sum Theta(n^2)
-    S1 = B12 - B22
-    S2 = A11 + A12
-    S3 = A21 + A22
-    S4 = B21 - B11
-    S5 = A11 + A22
-    S6 = B11 + B22
-    S7 = A12 - A22
-    S8 = B21 + B22
-    S9 = A11 - A21
-    S10 = B11 + B12
-
     # recursion calls
-    P1 = strassen_matrix_mult(A11, S1)
-    P2 = strassen_matrix_mult(S2, B22)
-    P3 = strassen_matrix_mult(S3, B11)
-    P4 = strassen_matrix_mult(A22, S4)
-    P5 = strassen_matrix_mult(S5, S6)
-    P6 = strassen_matrix_mult(S7, S8)
-    P7 = strassen_matrix_mult(S9, S10)
+    P1 = strassen_matrix_mult(A11, B12 - B22)
+    P2 = strassen_matrix_mult(A11 + A12, B22)
+    P3 = strassen_matrix_mult(A21 + A22, B11)
+    P4 = strassen_matrix_mult(A22, B21 - B11)
+    P5 = strassen_matrix_mult(A11 + A22, B11 + B22)
+    P6 = strassen_matrix_mult(A12 - A22, B21 + B22)
+    P7 = strassen_matrix_mult(A11 - A21, B11 + B12)
 
     # second batch of sums Theta(n^2)
     C11 = P5 + P4 - P2 + P6
