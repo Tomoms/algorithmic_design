@@ -44,6 +44,7 @@ def gauss_matrix_mult(A: Matrix, B: Matrix) -> Matrix:
 
     return Matrix(result, clone_matrix=False)
 
+
 def get_matrix_quadrands(A: Matrix) -> Tuple[Matrix, Matrix, Matrix, Matrix]:
     A11 = A.submatrix(0, A.num_of_rows//2, 0, A.num_of_cols//2)
     A12 = A.submatrix(0, A.num_of_rows//2, A.num_of_cols//2, A.num_of_cols//2)
@@ -83,12 +84,15 @@ def strassen_matrix_general(A: Matrix, B: Matrix) -> Matrix:
 
 def strassen_matrix_mult(A: Matrix, B: Matrix) -> Matrix:
 
+    if A.is_null():
+        return A
+    if B.is_null():
+        return B
+
     # Base case
     if max(A.num_of_rows, B.num_of_cols, A.num_of_cols) < 32:  # by hypothesis B.num_of_rows = A.num_of_cols
         return gauss_matrix_mult(A, B)
     
-    is_null = True
-
     # recursive step
     A11, A12, A21, A22 = get_matrix_quadrands(A)
     B11, B12, B21, B22 = get_matrix_quadrands(B)
@@ -390,6 +394,13 @@ class Matrix(object):
     def __repr__(self):
         return '\n'.join('{}'.format(row) for row in self._A)
 
+    def is_null(self):
+        for row in self._A:
+            for n in row:
+                if n != 0:
+                    return False
+        return True
+
 
 class IdentityMatrix(Matrix):
     ''' A class for identity matrices
@@ -412,19 +423,13 @@ if __name__ == '__main__':
     from timeit import timeit
     
     seed(0)  # to have reproducibility
-    '''
     for i in range(0, 13):
         size = 2**i - i
         stdout.write(f'{size}')
-        A = Matrix([[random() for x in range(size)] for y in range(size)])
+        A = Matrix([[0 for x in range(size)] for y in range(size)])
         B = Matrix([[random() for x in range(size)] for y in range(size)])
         for funct in ['strassen_matrix_general']:
             T = timeit(f'{funct}(A,B)', globals=locals(), number=1)
             stdout.write('\t{:.3f}'.format(T))
             stdout.flush()
         stdout.write('\n')
-    '''
-    
-    A = Matrix([[2, 1, 4], [2, 7, 3]])
-    B = Matrix([[1, 3, 2], [3, 0, 9], [3, 1, 2]])
-    print(strassen_matrix_general(A,B))
