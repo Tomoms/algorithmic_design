@@ -432,10 +432,10 @@ if __name__ == '__main__':
     
     seed(0)  # to have reproducibility
     for i in range(6, 11):
-        size = 2**i - i
+        size = 2**i
         stdout.write(f'{size}')
-        A = Matrix([[2 for x in range(8)] for y in range(8)])
-        B = Matrix([[1 for x in range(size)] for y in range(8)])
+        A = Matrix([[random() for x in range(size)] for y in range(size)])
+        B = Matrix([[random() for x in range(size)] for y in range(size)])
         for funct in ['strassen_matrix_general']:
             T = timeit(f'{funct}(A,B)', globals=locals(), number=1)
             stdout.write('\t{:.3f}'.format(T))
